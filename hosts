@@ -1,5 +1,5 @@
 [thestias]
-thestias.carrade.eu
+amaury@thestias.carrade.eu
 
 [thestias:vars]
 ansible_become=yes
