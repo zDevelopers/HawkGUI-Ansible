@@ -1,0 +1,16 @@
+secret_key = "{{ hawk.secret_key }}"
+allowed_hosts = [
+    "{{ app_host }}"
+]
+
+contents_dir = "{{ data }}"
+logs_dir = "{{ logs }}"
+
+sentry_dsn = "{{ hawk.sentry_dsn }}"
+
+[databases.default]
+host = "{{ hawk.database.host }}"
+port = "{{ hawk.database.port }}"
+name = "{{ hawk.database.name }}"
+user = "{{ hawk.database.user }}"
+password = "{{ hawk.database.password }}"

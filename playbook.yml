@@ -1,0 +1,22 @@
+---
+- hosts: thestias
+
+  vars:
+    settings_module: "hawk.settings.prod"
+
+  environment:
+    LANG: "fr_FR.UTF-8"
+    PIPENV_VENV_IN_PROJECT: "true"
+    PATH: "{{ home }}/bin:{{ home }}/.cargo/bin:{{ root }}/.venv/bin:{{ ansible_env.PATH }}"
+    DJANGO_SETTINGS_MODULE: "{{ settings_module }}"
+    HAWK_CONFIG: "{{ data }}/config.toml"
+
+  tasks:
+    - name: Install the system
+      import_tasks: tasks/system.yml
+
+    - name: Install Hawk
+      import_tasks: tasks/hawk.yml
+
+    - name: Install the server
+      import_tasks: tasks/server.yml

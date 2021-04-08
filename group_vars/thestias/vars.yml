@@ -1,0 +1,22 @@
+app_user: hawk
+app_group: nginx
+app_host: hawk.carrade.eu
+
+home: /home/hawk
+root: "{{ home }}/gui"
+venv: "{{ root }}/.venv"
+
+data: "{{ home }}/hawk-data"
+data_static: "{{ data }}/static"
+data_user: "{{ data }}/user-generated-content"
+
+rundir: /run/hawk
+socket: "{{ rundir }}/hawk.sock"
+pidfile: "{{ rundir }}/hawk.pid"
+
+logs: /var/log/hawk
+
+nginx_root: /etc/nginx/sites-available
+services_root: /etc/systemd/system
+
+core_workers: 2

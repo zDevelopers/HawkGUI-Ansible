@@ -1,0 +1,56 @@
+- name: Should have the repo up-to-date
+  git:
+    repo: 'https://github.com/zdevelopers/hawk-gui.git'
+    version: master
+    dest: "{{ root }}"
+    depth: 1
+    force: yes
+    recursive: yes
+
+- name: Should have all dependencies installed in a virtual environment
+  command:
+    cmd: "pipenv --bare install --dev --deploy"
+    chdir: "{{ root }}"
+
+- name: Should have the Rust module built
+  command:
+    cmd: "pipenv run maturin develop --release"
+    chdir: "{{ root }}"
+
+- name: Should have uWSGI, PyMySQL and sentry in the virtual environment
+  pip:
+    name:
+      - uwsgi
+      - PyMySQL
+      - sentry-sdk
+    virtualenv: "{{ venv }}"
+
+- name: Should have the secrets configuration file generated
+  template:
+    src: templates/config.toml
+    dest: "{{ data }}/config.toml"
+
+- name: Should have the SASS files compiled
+  make:
+    target: styles
+    chdir: "{{ root }}"
+
+- name: Should have the sprites compiled and optimized
+  command:
+    cmd: "pipenv run python manage.py generate_sprite"
+    chdir: "{{ root }}"
+
+- name: Should have the static files collected
+  command:
+    cmd: "pipenv run python manage.py collectstatic --no-input"
+    chdir: "{{ root }}"
+
+- name: Should have maintenance mode turned on
+  command:
+    cmd: "pipenv run python manage.py maintenance_mode on"
+    chdir: "{{ root }}"
+
+- name: Should have migration applied
+  command:
+    cmd: "pipenv run python manage.py migrate"
+    chdir: "{{ root }}"

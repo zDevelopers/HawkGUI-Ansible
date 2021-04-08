@@ -1,0 +1,59 @@
+- name: Should have the uWSGI file generated
+  become: true
+  template:
+    src: templates/uwsgi.ini
+    dest: "{{ data }}/uwsgi.ini"
+
+- name: Should have the nginx configuration generated
+  become: true
+  template:
+    src: templates/nginx.conf
+    dest: "{{ nginx_root }}/{{ app_host }}.conf"
+
+- name: Should have the systemd services installed
+  become: true
+  template:
+    src: templates/{{ item }}
+    dest: "{{ services_root }}/{{ item }}"
+    mode: "u=rwx,g=rx,o=rx"
+  with_items:
+    - uwsgi-hawk.socket
+    - uwsgi-hawk.service
+
+- name: Should have the run directory created with the right permissions
+  become: true
+  file:
+    path: "{{ rundir }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "0775"
+    state: directory
+
+# We stop the service because if it's still running, the socket service
+# won't restart as the socket is held active by uwsgi.
+- name: Should have the systemd system service enabled and stopped
+  systemd:
+    name: uwsgi-hawk.service
+    state: stopped
+    enabled: yes
+
+- name: Should have the systemd services stopped then restarted, and enabled
+  systemd:
+    name: uwsgi-hawk.socket
+    state: "{{ item }}"
+    enabled: yes
+    daemon_reload: yes
+  with_items:
+    - stopped
+    - started
+
+- name: Should have maintenance mode turned off
+  command:
+    cmd: "pipenv run python manage.py maintenance_mode off"
+    chdir: "{{ root }}"
+
+- name: Should have nginx reloaded
+  become: true
+  service:
+    name: nginx
+    state: reloaded

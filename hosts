@@ -1,0 +1,7 @@
+[thestias]
+thestias.carrade.eu
+
+[thestias:vars]
+ansible_become=yes
+ansible_become_method=sudo
+ansible_become_pass="{{ thestias_become_password }}"

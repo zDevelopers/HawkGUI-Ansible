@@ -1,0 +1,18 @@
+[Unit]
+Description=Hawk uWSGI app
+After=syslog.target
+
+[Service]
+ExecStart={{ venv }}/bin/uwsgi {{ data }}/uwsgi.ini --socket {{ socket }}
+ExecReload=/bin/kill -HUP $MAINPID
+
+User={{ app_user }}
+Group={{ app_group }}
+
+Restart=on-failure
+KillSignal=SIGQUIT
+
+Type=notify
+NotifyAccess=all
+
+StandardError=syslog

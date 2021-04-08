@@ -1,0 +1,11 @@
+[Unit]
+Description=Socket for Hawk uWSGI app
+
+[Socket]
+ListenStream={{ socket }}
+SocketUser={{ app_user }}
+SocketGroup={{ app_group }}
+SocketMode=0666
+
+[Install]
+WantedBy=sockets.target
