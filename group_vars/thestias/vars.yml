@@ -2,7 +2,11 @@ app_user: hawk
 app_group: nginx
 app_host: hawk.carrade.eu
 
+# Must be a version installable by pyenv
+python_version: 3.9.2
+
 home: /home/hawk
+pyenv: "{{ home }}/.pyenv"
 root: "{{ home }}/gui"
 venv: "{{ root }}/.venv"
 

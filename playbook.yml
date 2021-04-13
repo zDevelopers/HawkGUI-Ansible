@@ -7,7 +7,8 @@
   environment:
     LANG: "fr_FR.UTF-8"
     PIPENV_VENV_IN_PROJECT: "true"
-    PATH: "{{ home }}/bin:{{ home }}/.cargo/bin:{{ root }}/.venv/bin:{{ ansible_env.PATH }}"
+    PYENV_ROOT: "{{ pyenv }}"
+    PATH: "{{ pyenv }}/bin:{{ pyenv }}/versions/{{ python_version }}/bin:{{ home }}/bin:{{ home }}/.cargo/bin:{{ root }}/.venv/bin:{{ ansible_env.PATH }}"
     DJANGO_SETTINGS_MODULE: "{{ settings_module }}"
     HAWK_CONFIG: "{{ data }}/config.toml"
 
@@ -16,6 +17,7 @@
       import_tasks: tasks/system.yml
 
     - name: Install Hawk
+      become_user: "{{ app_user }}"
       import_tasks: tasks/hawk.yml
 
     - name: Install the server

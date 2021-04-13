@@ -17,6 +17,7 @@
   with_items:
     - "{{ root }}"
     - "{{ home }}/bin"
+    - "{{ pyenv }}"
     - "{{ data }}"
     - "{{ data_static }}"
     - "{{ data_user }}"
@@ -29,14 +30,29 @@
       - nginx
       - python3
       - python3-devel
+      - libffi-devel
       - make
       - gcc
       - optipng
 
+- name: Should have pyenv installed
+  become_user: "{{ app_user }}"
+  git:
+    repo: "https://github.com/pyenv/pyenv.git"
+    version: master
+    dest: "{{ pyenv }}"
+    depth: 1
+    force: yes
+    recursive: yes
+
+- name: Should have Python {{ python_version }} installed
+  become_user: "{{ app_user }}"
+  command: "pyenv install --skip-existing {{ python_version }}"
+
 - name: Should have Rustup and nightly toolchains installed
+  become_user: "{{ app_user }}"
   shell:
     cmd: |
-      sudo su {{ app_user }}
       curl https://sh.rustup.rs -sSf | sh -s -- -y
       rustup toolchain install nightly
       rustup target add x86_64-unknown-linux-musl --toolchain nightly
