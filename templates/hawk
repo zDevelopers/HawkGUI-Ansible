@@ -1,0 +1,17 @@
+#!/bin/sh
+
+BASE={{ home }}
+PYTHON={{ venv }}/bin/python
+APP={{ root }}
+TARGET_USER={{ app_user }}
+
+if [ "$USER" != "$TARGET_USER" ]; then
+  sudo -u "$TARGET_USER" "$0" $@
+  exit $?
+fi
+
+export DJANGO_SETTINGS_MODULE={{ settings_module }}
+export HAWK_CONFIG={{ data }}/config.toml
+
+cd "$APP" || return 1
+$PYTHON $APP/manage.py $@

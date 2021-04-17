@@ -30,6 +30,13 @@
     src: templates/config.toml
     dest: "{{ data }}/config.toml"
 
+- name: Should have the wrapper script generated
+  become: true
+  template:
+    src: templates/hawk
+    dest: "{{ data }}/hawk"
+    mode: u=rwx,g=rx,o=rx
+
 - name: Should have the SASS files compiled
   make:
     target: styles
